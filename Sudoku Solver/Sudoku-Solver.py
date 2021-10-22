@@ -153,7 +153,7 @@ def solve_sudoku(sudoku_board:list[list]) -> bool:
     """
     all_posibillities = [1, 2, 3, 4, 5, 6, 7, 8, 9]
     posibillities_to_fill_in = list()
-    lowest_num_of_possibilities = 1
+    lowest_num_of_possibilities = 10
     
 
     for row in range(len(sudoku_board)):    # parsing for numbers, we can fill in
@@ -193,6 +193,8 @@ def solve_sudoku(sudoku_board:list[list]) -> bool:
                 #        pass    # call us self
             
             # !!!!!!!!! make here a board backup
+            for i in range(len(board_backup)):    # restore old board
+                sudoku_board[i] = board_backup[i].copy()
     return False
 
 
@@ -209,7 +211,7 @@ if __name__ == "__main__":
     #print_board()
     #print(check_fully_filled(sudoku_board))
 
-    with open("sudoku_board.txt", "r") as file:
+    with open("sudoku_board2.txt", "r") as file:
         row = 0
         for line in file:
             line = line.strip()
@@ -219,6 +221,8 @@ if __name__ == "__main__":
                 sudoku_board[row][i] = int(nums[i]) if nums[i] != '' else None
             row += 1
     
+    print_board()
+    print()
 
     if solve_sudoku(sudoku_board) == True:
         print("solved board!!")
