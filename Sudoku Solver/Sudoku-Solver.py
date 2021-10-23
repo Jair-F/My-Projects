@@ -115,6 +115,40 @@ def check_sudoku_board() -> bool:
                     return False
     return True
 
+def check_duplicate_numbers(sudoku_board:list[list]) -> bool:
+    """
+        checks only if there is a duplicate numbers in one row-colum or grid!
+        Not if the board is full!!
+        returns true if he doesnt found a duplicate number
+    """
+    row_nums   = list
+    colum_nums = list
+    grid_nums  = list
+    for i in range(9):  # get the horizontal and vertical lines
+        row_nums   = get_numbers_in_row(i)
+        colum_nums = get_numbers_in_colum(i)
+
+        row_nums.sort()
+        colum_nums.sort()
+
+        for i in range(1, len(row_nums)):
+            if row_nums[i - 1] == row_nums[i]:
+                return True
+        for i in range(1, len(colum_nums)):
+            if colum_nums[i - 1] == colum_nums[i]:
+                return True
+    
+    for rows in range(0, 6 + 1, 3):   # get the grids
+        for colums in range(0, 6 + 1, 3):
+            grid_nums  = get_numbers_in_grid(rows, colums)
+
+            grid_nums.sort()
+            for i in range(1, len(grid_nums)):
+                if grid_nums[i - 1] == grid_nums[i]:
+                    return True
+    
+    return False
+
 def check_fully_filled(sudoku_board:list[list]) -> bool:
     """
         checks if every field in the sudoku_board is up - if the board is entirely filled
@@ -130,12 +164,14 @@ def solve_sudoku(sudoku_board:list[list]) -> bool:
         Returns if there is a solution for this board - if it could solve it
     """
 
+    if check_duplicate_numbers(sudoku_board) == True:
+        return False
     if check_fully_filled(sudoku_board) == True:
         return check_sudoku_board() # if the board is right, it will return true else false
 
-    board_backup = list()
-    for row in sudoku_board:    # make a deep copy of the board
-        board_backup.append(row.copy())
+    #board_backup = list()
+    #for row in sudoku_board:    # make a deep copy of the board
+    #    board_backup.append(row.copy())
 
     """
         this list stores at every position of the field the posibillities, which could be filled in
@@ -185,6 +221,8 @@ def solve_sudoku(sudoku_board:list[list]) -> bool:
                     sudoku_board[row][colum] = possibillity
                     if solve_sudoku(sudoku_board) == True:
                         return True
+                    # restore the actual position by setting it to None
+                    sudoku_board[row][colum] = None
 
                 #if num_of_possibillities == 1:
                 #    sudoku_board[row][colum] = posibillities_to_fill_in[row][colum][0]
@@ -192,9 +230,9 @@ def solve_sudoku(sudoku_board:list[list]) -> bool:
                 #    for possibillity in posibillities_to_fill_in[row][colum]:
                 #        pass    # call us self
             
-            # !!!!!!!!! make here a board backup
-            for i in range(len(board_backup)):    # restore old board
-                sudoku_board[i] = board_backup[i].copy()
+            # restore the board
+            #for i in range(len(board_backup)):    # restore old board
+            #    sudoku_board[i] = board_backup[i].copy()
     return False
 
 
@@ -205,12 +243,7 @@ def print_board():
         print()
 
 if __name__ == "__main__":
-    #for row in range(len(sudoku_board)):
-    #    for colum in range(len(sudoku_board[row])):
-    #        sudoku_board[row][colum] = 10
-    #print_board()
-    #print(check_fully_filled(sudoku_board))
-
+    
     with open("sudoku_board2.txt", "r") as file:
         row = 0
         for line in file:
