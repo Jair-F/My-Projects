@@ -85,7 +85,7 @@ def get_numbers_in_grid(begin_row:int, begin_colum:int) -> list:
 
 def check_sudoku_board() -> bool:
     """
-        
+        returns true if the board is fully solved!
     """
     for i in range(9):  # Check the the horizontal and vertical lines
         row_nums   = get_numbers_in_row(i)
@@ -131,11 +131,11 @@ def check_duplicate_numbers(sudoku_board:list[list]) -> bool:
         row_nums.sort()
         colum_nums.sort()
 
-        for i in range(1, len(row_nums)):
-            if row_nums[i - 1] == row_nums[i]:
+        for a in range(1, len(row_nums)):
+            if row_nums[a - 1] == row_nums[a]:
                 return True
-        for i in range(1, len(colum_nums)):
-            if colum_nums[i - 1] == colum_nums[i]:
+        for a in range(1, len(colum_nums)):
+            if colum_nums[a - 1] == colum_nums[a]:
                 return True
     
     for rows in range(0, 6 + 1, 3):   # get the grids
@@ -196,43 +196,38 @@ def solve_sudoku(sudoku_board:list[list]) -> bool:
         posibillities_to_fill_in.append(list()) # append an new row
         for colum in range(len(sudoku_board[row])):
             posibillities_to_fill_in[row].append(list()) # append an new colum(as liste - there will the posibillies be stored in)
-            
+
             if sudoku_board[row][colum] != None:    # if at this position there is already a number - continue - we dont can put in there a number
                 continue
 
             used_numbers = get_numbers_in_colum(colum) + get_numbers_in_row(row) + get_numbers_in_grid(row, colum)
-            used_numbers = list(set(used_numbers)) # remove duplicates
+            #used_numbers = list(set(used_numbers)) # remove duplicates(not shure if we need this)
             posibillities_to_fill_in[row][colum] = [item for item in all_posibillities if item not in used_numbers] # add the numbers, which are not in used_numbers, but in all_posibillities
             
             num_of_possibillities = len(posibillities_to_fill_in[row][colum])
-            lowest_num_of_possibilities = num_of_possibillities if num_of_possibillities < lowest_num_of_possibilities else lowest_num_of_possibilities
+            if num_of_possibillities < lowest_num_of_possibilities:
+                lowest_num_of_possibilities = num_of_possibillities
             #print(row, ':', colum, ' ->', used_numbers, '-> possibillities: ', posibillities_to_fill_in[row][colum])
 
-    #for row in posibillites_to_fill_in:
-    #    print(row)
     
     for row in range(len(sudoku_board)):    # filling in one number
         for colum in range(len(sudoku_board[row])):
-            if sudoku_board[row][colum] != None:   # if the field is already filled up
-                continue
+            #if sudoku_board[row][colum] != None:   # if the field is already filled up
+            #    continue   # dont need that because ther arent posibillities - we sorted them out in the for section above
             num_of_possibillities = len(posibillities_to_fill_in[row][colum])
             if num_of_possibillities == lowest_num_of_possibilities:
                 for possibillity in posibillities_to_fill_in[row][colum]:
                     sudoku_board[row][colum] = possibillity
                     if solve_sudoku(sudoku_board) == True:
                         return True
-                    # restore the actual position by setting it to None
-                    sudoku_board[row][colum] = None
+                
+                # restore the actual position by setting it to None(if we change our position)
+                sudoku_board[row][colum] = None
 
-                #if num_of_possibillities == 1:
-                #    sudoku_board[row][colum] = posibillities_to_fill_in[row][colum][0]
-                #elif num_of_possibillities == lowest_num_of_possibilities:
-                #    for possibillity in posibillities_to_fill_in[row][colum]:
-                #        pass    # call us self
-            
             # restore the board
             #for i in range(len(board_backup)):    # restore old board
             #    sudoku_board[i] = board_backup[i].copy()
+                return False
     return False
 
 
