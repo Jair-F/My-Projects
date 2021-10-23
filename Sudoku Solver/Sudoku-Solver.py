@@ -190,7 +190,7 @@ def solve_sudoku(sudoku_board:list[list]) -> bool:
     all_posibillities = [1, 2, 3, 4, 5, 6, 7, 8, 9]
     posibillities_to_fill_in = list()
     lowest_num_of_possibilities = 10
-    
+
 
     for row in range(len(sudoku_board)):    # parsing for numbers, we can fill in
         posibillities_to_fill_in.append(list()) # append an new row
@@ -237,14 +237,16 @@ def solve_sudoku(sudoku_board:list[list]) -> bool:
 
 
 def print_board():
-    for row in sudoku_board:
-        for colum in row:
-            print(colum if colum != None else ' ', ',', end='')
-        print()
+    print("-------------------------")
+    for row in range(len(sudoku_board)):
+        print(f"|{sudoku_board[row][0]}  {sudoku_board[row][1]}  {sudoku_board[row][2]}|{sudoku_board[row][3]}  {sudoku_board[row][4]}  {sudoku_board[row][5]}|{sudoku_board[row][6]}  {sudoku_board[row][7]}  {sudoku_board[row][8]}|".replace("None", ' '))
+        if (row+1) % 3 == 0:
+            print("-------------------------")
+
 
 if __name__ == "__main__":
-    
-    with open("sudoku_board2.txt", "r") as file:
+    input_board = input("File with sudoku_board: ")
+    with open(input_board, "r") as file:
         row = 0
         for line in file:
             line = line.strip()
